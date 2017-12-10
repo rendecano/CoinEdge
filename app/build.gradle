@@ -1,0 +1,92 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+
+    compileSdkVersion deps.build.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.teamdecano.cryptocoin"
+        minSdkVersion deps.build.minSdkVersion
+        targetSdkVersion deps.build.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+}
+
+kapt {
+    generateStubs = true
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Google/Android
+    implementation deps.kotlin.kotlinStdLib
+    implementation deps.support.appCompat
+    implementation deps.support.recyclerView
+    implementation deps.support.constraintLayout
+    implementation deps.support.design
+    implementation deps.support.cardView
+    implementation 'com.android.support:palette-v7:27.0.2'
+    compile deps.build.guava
+
+    implementation deps.support.appCompatv4
+
+
+    // Uber
+    kapt deps.uber.compilerTest
+    implementation deps.uber.ribAndroid
+    implementation deps.uber.ribWorkflow
+    implementation deps.uber.ribScreenStack
+    testImplementation deps.uber.ribUtils
+
+    kapt deps.apt.raveCompiler
+    compile deps.uber.rave
+
+    // Rx
+    implementation deps.external.rxbinding
+    provided deps.apt.javax
+
+    // Dagger
+    implementation deps.external.dagger
+    implementation deps.external.daggerAndroid
+    implementation deps.external.daggerAndroidSupport
+    kapt deps.external.daggerAndroidProcessor
+    kapt deps.apt.daggerCompiler
+
+    // Retrofit
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.adapterRxJava
+    implementation deps.retrofit.gsonConverter
+
+    compile 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    // Auto value
+    kapt deps.apt.autoValue
+    provided deps.apt.autoValueAnnotations
+
+    // Test
+    testImplementation deps.test.junit
+
+    // UI
+    implementation 'com.airbnb.android:lottie:2.3.0'
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+
+    implementation 'com.lapism:searchview:5.0.0-alpha7'
+    implementation 'com.google.android:flexbox:0.3.1'
+}

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorBg">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <View
+            android:id="@+id/bg_dominant"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_padding"
+            android:animateLayoutChanges="true"
+            android:paddingLeft="@dimen/activity_padding"
+            android:paddingRight="@dimen/activity_padding"
+            android:paddingTop="32dp"
+            android:scrollbars="none">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    app:cardElevation="4dp"
+                    app:cardUseCompatPadding="true">
+
+                    <ImageView
+                        android:id="@+id/coin_logo"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_margin="@dimen/view_padding"
+                        android:src="@mipmap/ic_launcher" />
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/details_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical"
+                    android:paddingTop="48dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <include layout="@layout/coin_details_info" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/activity_padding" />
+
+                    <include layout="@layout/coin_details_features" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/activity_padding" />
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardUseCompatPadding="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:animateLayoutChanges="true"
+                            android:background="@color/colorPrimary"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="@dimen/view_padding"
+                                android:text="Total coin supply: "
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_coin_supply"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="start"
+                                android:layout_margin="@dimen/view_padding"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                tools:text="Bitcoin" />
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardUseCompatPadding="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:animateLayoutChanges="true"
+                            android:background="@color/colorPrimary"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="@dimen/view_padding"
+                                android:text="Start date: "
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_start_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="start"
+                                android:layout_margin="@dimen/view_padding"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                tools:text="Bitcoin" />
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+            </FrameLayout>
+
+        </ScrollView>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="true"
+            app:lottie_colorFilter="@color/colorPrimary"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            app:lottie_fileName="loader.json"
+            app:lottie_loop="true" />
+
+    </FrameLayout>
+
+</com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsView>
