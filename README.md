@@ -2,7 +2,7 @@
 An app to demonstrate RIBs, Uber's newest mobile architecture.
 
 # Screenshot
-![Alt text](/screenshots/coin_list.png?raw=true "Screenshot"){:height="36px" width="36px"}.
+![Alt text](/screenshots/coin_list.png?raw=true "Screenshot")
 ![Alt text](/screenshots/search_coin.png?raw=true "Screenshot")
 ![Alt text](/screenshots/coin_details.png?raw=true "Screenshot")
 
