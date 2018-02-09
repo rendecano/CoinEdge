@@ -19,6 +19,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
+import com.jakewharton.rxbinding2.view.RxView
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
@@ -81,6 +83,11 @@ class CoinListView @JvmOverloads constructor(context: Context, attrs: AttributeS
     override fun hideLoadingProgress() {
         loadingView.visibility = View.GONE
         loadingView.cancelAnimation()
+        swipeRefreshLayout.isRefreshing = false
+    }
+
+    override fun onRefresh(): Observable<Any> {
+        return RxSwipeRefreshLayout.refreshes(swipeRefreshLayout)
     }
 
     inner class LineItemDecoration : android.support.v7.widget.DividerItemDecoration {

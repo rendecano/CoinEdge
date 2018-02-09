@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsBuilder.CoinDetailsScope
 import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
-import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -62,8 +64,22 @@ class CoinDetailsBuilder(dependency: ParentComponent) : ViewBuilder<CoinDetailsV
             @CoinDetailsScope
             @Provides
             @JvmStatic
-            internal fun provideCoinService(): CoinService {
-                return CoinService()
+            fun provideHttpClient(context: Context): OkHttpClient {
+
+                val cacheSize = 10 * 1024 * 1024L // 10 MB
+                val cacheDirectory = File(context.cacheDir.absolutePath, "CoinEdgeCache")
+                val cache = Cache(cacheDirectory, cacheSize)
+
+                return OkHttpClient.Builder()
+                        .cache(cache)
+                        .build()
+            }
+
+            @CoinDetailsScope
+            @Provides
+            @JvmStatic
+            internal fun provideCoinService(okHttpClient: OkHttpClient): CoinService {
+                return CoinService(okHttpClient)
             }
 
             @CoinDetailsScope

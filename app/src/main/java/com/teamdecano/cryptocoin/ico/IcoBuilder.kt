@@ -1,5 +1,6 @@
 package com.teamdecano.cryptocoin.ico
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
@@ -12,6 +13,9 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import io.objectbox.BoxStore
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -47,6 +51,8 @@ class IcoBuilder(dependency: ParentComponent) : ViewBuilder<IcoView, IcoRouter, 
 
     interface ParentComponent {
         fun boxStore(): BoxStore
+
+        fun context(): Context
     }
 
     @dagger.Module
@@ -62,8 +68,22 @@ class IcoBuilder(dependency: ParentComponent) : ViewBuilder<IcoView, IcoRouter, 
             @IcoScope
             @Provides
             @JvmStatic
-            internal fun provideIcoService(): IcoService {
-                return IcoService()
+            fun provideHttpClient(context: Context): OkHttpClient {
+
+                val cacheSize = 10 * 1024 * 1024L // 10 MB
+                val cacheDirectory = File(context.cacheDir.absolutePath, "CoinEdgeCache")
+                val cache = Cache(cacheDirectory, cacheSize)
+
+                return OkHttpClient.Builder()
+                        .cache(cache)
+                        .build()
+            }
+
+            @IcoScope
+            @Provides
+            @JvmStatic
+            internal fun provideIcoService(okHttpClient: OkHttpClient): IcoService {
+                return IcoService(okHttpClient)
             }
 
             @IcoScope
@@ -90,8 +110,6 @@ class IcoBuilder(dependency: ParentComponent) : ViewBuilder<IcoView, IcoRouter, 
                 return IcoRouter(view, interactor, component)
             }
         }
-
-        // TODO: Create provider methods for dependencies created by this Rib. These should be static.
     }
 
     @IcoScope

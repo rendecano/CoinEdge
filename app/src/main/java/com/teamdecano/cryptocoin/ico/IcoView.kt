@@ -35,7 +35,6 @@ class IcoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         loadingView.speed = 2f
     }
 
-
     inner class CustomPagerAdapter : PagerAdapter() {
 
         private var listIcoItems: List<List<IcoItem>> = ArrayList<ArrayList<IcoItem>>()

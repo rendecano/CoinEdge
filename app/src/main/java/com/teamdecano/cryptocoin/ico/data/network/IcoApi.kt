@@ -6,6 +6,7 @@ import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinList
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCmc
 import com.teamdecano.cryptocoin.ico.data.model.IcoItem
 import kotlinx.coroutines.experimental.Deferred
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -26,12 +27,13 @@ interface IcoApi {
 
     companion object {
 
-        fun create(): IcoApi {
+        fun create(okHttpClient: OkHttpClient): IcoApi {
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(CoroutineCallAdapterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl("https://chasing-coins.com/")
+                    .client(okHttpClient)
                     .build()
 
             return retrofit.create(IcoApi::class.java)

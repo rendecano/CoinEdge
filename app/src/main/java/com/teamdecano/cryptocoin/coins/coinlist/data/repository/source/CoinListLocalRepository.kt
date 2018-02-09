@@ -17,6 +17,8 @@ import kotlinx.coroutines.experimental.async
  */
 class CoinListLocalRepository(boxStore: BoxStore) {
 
+    private val BASE_IMAGE_URL = "https://chasing-coins.com/api/v1/std/logo/"
+
     private var coinListCccBox: Box<CoinListCcc> = boxStore.boxFor()
     private var coinListCmcBox: Box<CoinListCmc> = boxStore.boxFor()
 
@@ -25,23 +27,20 @@ class CoinListLocalRepository(boxStore: BoxStore) {
         return async(CommonPool) {
 
             // Get all coins from Cmc
-            var coinListCmcQuery = coinListCmcBox.query().sort { a, b ->
+            val coinListCmcQuery = coinListCmcBox.query().sort { a, b ->
                 when {
                     a.rank!!.toInt() != b.rank!!.toInt() -> a.rank!!.toInt() - b.rank!!.toInt()
                     else -> a.rank!!.toInt() - b.rank!!.toInt()
                 }
             }.build()
 
-
             val coinsCmc = coinListCmcQuery.find()
-            var coinList = ArrayList<CoinListModel>()
-            val baseUrl = "https://chasing-coins.com/api/v1/std/logo/"
+            val coinList = ArrayList<CoinListModel>()
 
             coinsCmc.forEach { coin ->
-                val id = coinListCccBox.query().equal(CoinListCcc_.coinSymbol, coin.symbol).build().findFirst()?.coinId
 
-                coinList.add(CoinListModel(id,
-                        baseUrl + coin.symbol,
+                coinList.add(CoinListModel("",
+                        BASE_IMAGE_URL + coin.symbol,
                         coin.symbol,
                         coin.name,
                         coin.percentChange24h,
@@ -78,5 +77,9 @@ class CoinListLocalRepository(boxStore: BoxStore) {
             // Insert all
             coinListCccBox.put(coinCccList)
         }
+    }
+
+    fun getId(symbol: String): String? {
+        return coinListCccBox.query().equal(CoinListCcc_.coinSymbol, symbol).build().findFirst()?.coinId
     }
 }

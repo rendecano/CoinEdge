@@ -15,4 +15,6 @@ class CoinEdgeApplication : Application() {
         super.onCreate()
         boxStore = MyObjectBox.builder().androidContext(applicationContext).build()
     }
+
+
 }

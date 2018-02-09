@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class RootActivity : RibActivity(), OptionsMenuService {
 
-    private val TAG = "TodoActivity"
+    private val TAG = javaClass.simpleName
 
     private val menuListeners = CopyOnWriteArrayList<Listener>()
 

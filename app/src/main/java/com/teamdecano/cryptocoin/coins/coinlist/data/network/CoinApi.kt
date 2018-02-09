@@ -5,11 +5,14 @@ import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinDetails
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinList
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCmc
 import kotlinx.coroutines.experimental.Deferred
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.io.File
 
 
 /**
@@ -31,12 +34,13 @@ interface CoinApi {
 
     companion object {
 
-        fun create(baseUrl: String): CoinApi {
+        fun create(baseUrl: String, okHttpClient: OkHttpClient): CoinApi {
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(CoroutineCallAdapterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(baseUrl)
+                    .client(okHttpClient)
                     .build()
 
             return retrofit.create(CoinApi::class.java)

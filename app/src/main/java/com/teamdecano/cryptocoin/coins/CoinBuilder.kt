@@ -1,5 +1,6 @@
 package com.teamdecano.cryptocoin.coins
 
+import android.content.Context
 import com.teamdecano.cryptocoin.coins.coinlist.CoinListBuilder
 import com.teamdecano.cryptocoin.root.RootView
 import com.uber.rib.core.Builder
@@ -35,6 +36,8 @@ class CoinBuilder(dependency: ParentComponent) : Builder<CoinRouter, CoinBuilder
         fun rootView(): RootView
 
         fun boxStore(): BoxStore
+
+        fun context(): Context
     }
 
     @dagger.Module

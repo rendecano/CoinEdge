@@ -6,7 +6,6 @@ import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
-import io.objectbox.BoxStore
 import io.reactivex.Observable
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Job
@@ -38,12 +37,20 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
         presenter.onSelectCoin()
                 .subscribe({ coinListViewModel ->
 
+                    coinListViewModel.id = coinListLocalRepository.getId(coinListViewModel.name!!)
+
                     if (!coinListViewModel.id.isNullOrEmpty()) {
                         router.routeToCoinDetails(coinListViewModel)
                     } else {
                         presenter.showError("No data found for this crypto currency")
                     }
                 })
+
+        presenter.onRefresh().subscribe({
+
+            updateListFromNetwork()
+
+        })
 
         presenter.showLoadingProgress()
 
@@ -99,6 +106,7 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
         fun hideLoadingProgress()
         fun showError(error: String)
         fun onSelectCoin(): Observable<CoinListModel>
+        fun onRefresh(): Observable<Any>
     }
 
     private fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job {

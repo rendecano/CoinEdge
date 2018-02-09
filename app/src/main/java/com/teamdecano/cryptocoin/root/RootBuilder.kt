@@ -77,7 +77,6 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
                 return ScreenStack(rootView.viewContent())
             }
 
-
             @RootScope
             @Provides
             @JvmStatic

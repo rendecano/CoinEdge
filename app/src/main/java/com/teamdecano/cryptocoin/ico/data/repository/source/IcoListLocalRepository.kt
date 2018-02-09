@@ -28,7 +28,6 @@ class IcoListLocalRepository(boxStore: BoxStore) {
         }
     }
 
-
     fun updateList(activeList: List<IcoItem>, upcomingList: List<IcoItem>) {
 
         async(CommonPool) {

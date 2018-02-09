@@ -1,11 +1,11 @@
 package com.teamdecano.cryptocoin.coins.coinlist
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coinlist.CoinListBuilder.CoinListScope
 import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
-import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
 import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListLocalRepository
 import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListNetworkRepository
 import com.uber.rib.core.InteractorBaseComponent
@@ -14,6 +14,9 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import io.objectbox.BoxStore
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -50,6 +53,8 @@ class CoinListBuilder(dependency: ParentComponent) : ViewBuilder<CoinListView, C
     interface ParentComponent {
 
         fun boxStore(): BoxStore
+
+        fun context(): Context
     }
 
     @dagger.Module
@@ -65,8 +70,22 @@ class CoinListBuilder(dependency: ParentComponent) : ViewBuilder<CoinListView, C
             @CoinListScope
             @Provides
             @JvmStatic
-            fun provideCoinService(): CoinService {
-                return CoinService()
+            fun provideHttpClient(context: Context): OkHttpClient {
+
+                var cacheSize = 10 * 1024 * 1024L // 10 MB
+                var cacheDirectory = File(context.cacheDir.absolutePath, "CoinEdgeCache")
+                var cache = Cache(cacheDirectory, cacheSize)
+
+                return OkHttpClient.Builder()
+                        .cache(cache)
+                        .build()
+            }
+
+            @CoinListScope
+            @Provides
+            @JvmStatic
+            fun provideCoinService(okHttpClient: OkHttpClient): CoinService {
+                return CoinService(okHttpClient)
             }
 
             @CoinListScope

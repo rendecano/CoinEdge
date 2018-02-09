@@ -14,12 +14,6 @@
         android:title="ICO" />
 
     <item
-        android:id="@+id/navigation_convert"
-        android:enabled="true"
-        android:icon="@drawable/ic_convert"
-        android:title="Convert" />
-
-    <item
         android:id="@+id/navigation_settings"
         android:enabled="true"
         android:icon="@drawable/ic_settings"
