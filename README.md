@@ -15,7 +15,13 @@ Kotlin
 
 # API Used
 CryptoCompare
-- https://www.cryptocompare.com/api#-api-data-price-
+- https://www.cryptocompare.com/api/
+
+Chasing Coins
+https://chasing-coins.com/api
+
+CoinMarketCap
+https://coinmarketcap.com/api/
 
 # UI
  - Lottie
@@ -25,11 +31,8 @@ https://github.com/airbnb/lottie-android
  http://iconion.com/
  
 # Android versions
-- Android 8.1 Oreo
+- Android 5.1 above
 
 # Further Improvements
-- Add Swipe to refresh to update the coins list
-- Kotlin Coroutines
 - Latest news for each coins
-- Caching of data (Realm, Sqlite)
 - Android architecture components (Room, ViewModel, LiveData, Paging)
