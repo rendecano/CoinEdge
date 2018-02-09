@@ -2,12 +2,14 @@ apply from: 'gradle/dependencies.gradle'
 
 buildscript {
     ext.kotlin_version = '1.1.51'
+    ext.objectboxVersion = '1.4.1'
     repositories {
         google()
         jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        maven { url "http://objectbox.net/beta-repo/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -16,6 +18,8 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.11"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
     }
 }
 
@@ -28,7 +32,19 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+        maven { url "http://objectbox.net/beta-repo/" }
+        maven { url "https://jitpack.io" }
     }
+
+    buildscript {
+        repositories {
+            maven { url "http://objectbox.net/beta-repo/" }
+            jcenter()
+            mavenCentral()
+            google()
+        }
+    }
+
 }
 
 task clean(type: Delete) {

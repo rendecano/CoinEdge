@@ -1,14 +1,17 @@
 package com.teamdecano.cryptocoin.coins.coinlist
 
-import com.teamdecano.cryptocoin.services.CoinService
-import com.teamdecano.cryptocoin.services.model.CoinList
+import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListLocalRepository
+import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListNetworkRepository
+import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
+import io.objectbox.BoxStore
 import io.reactivex.Observable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 /**
@@ -22,63 +25,66 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
     @Inject
     lateinit var presenter: CoinListPresenter
 
+    @Inject
+    lateinit var coinListNetworkRepository: CoinListNetworkRepository
+
+    @Inject
+    lateinit var coinListLocalRepository: CoinListLocalRepository
+
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
 
         // Listen for item selection
-        presenter
-                .onSelectCoin()
-                .subscribe({ coinListViewModel -> router.routeToCoinDetails(coinListViewModel) })
+        presenter.onSelectCoin()
+                .subscribe({ coinListViewModel ->
+
+                    if (!coinListViewModel.id.isNullOrEmpty()) {
+                        router.routeToCoinDetails(coinListViewModel)
+                    } else {
+                        presenter.showError("No data found for this crypto currency")
+                    }
+                })
 
         presenter.showLoadingProgress()
 
-        // TODO: Inject coin service
-
-        var coinService = CoinService()
-
-        coinService.getCoinList().enqueue(object : Callback<CoinList> {
-
-            override fun onFailure(call: Call<CoinList>?, t: Throwable?) {
-
-                presenter.showError(t!!.message.toString())
-                presenter.showLoadingProgress()
-
-            }
-
-            override fun onResponse(call: Call<CoinList>?, response: Response<CoinList>) {
-
-                if (response.isSuccessful) {
-
-                    val coinList = ArrayList<CoinListViewModel>()
-
-                    val baseUrl = response.body()!!.baseImageUrl
-
-                    for (item in response.body()!!.feeds!!.entries) {
-                        coinList.add(CoinListViewModel(item.value.id,
-                                baseUrl + item.value.imageUrl,
-                                item.value.name,
-                                item.value.coinName,
-                                item.value.fullName,
-                                item.value.sortOrder))
-                    }
-
-                    presenter.showCoinList(coinList.sortedWith(CoinSorter))
-
-                } else {
-                    presenter.showError("Ooops. An error occured. Please try again.")
-                }
-                presenter.hideLoadingProgress()
-            }
-        })
+        getCachedContents()
+        updateListFromNetwork()
     }
 
-    private class CoinSorter {
+    private fun getCachedContents() {
+        launchAsync {
 
-        companion object : Comparator<CoinListViewModel> {
+            try {
 
-            override fun compare(a: CoinListViewModel, b: CoinListViewModel): Int = when {
-                a.sortOrder!!.toInt() != b.sortOrder!!.toInt() -> a.sortOrder!!.toInt() - b.sortOrder!!.toInt()
-                else -> a.sortOrder!!.toInt() - b.sortOrder!!.toInt()
+                val coinList = coinListLocalRepository.getList()
+                presenter.showCoinList(coinList.await())
+
+            } catch (exception: Exception) {
+
+                presenter.showError("Error occured")
+                presenter.hideLoadingProgress()
+            }
+        }
+    }
+
+    private fun updateListFromNetwork() {
+
+        launchAsync {
+
+            try {
+
+                val coinListObjectCmc = coinListNetworkRepository.getCoinListCoinMarketCap()
+                val coinListObject = coinListNetworkRepository.getCoinListCcc()
+                coinListLocalRepository.updateList(coinListObjectCmc, coinListObject)
+                val coinList = coinListLocalRepository.getList()
+
+                presenter.showCoinList(coinList.await())
+                presenter.hideLoadingProgress()
+
+            } catch (exception: Exception) {
+
+                presenter.showError("Error occured")
+                presenter.hideLoadingProgress()
             }
         }
     }
@@ -88,10 +94,14 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
      */
     interface CoinListPresenter {
 
-        fun showCoinList(coinList: List<CoinListViewModel>)
+        fun showCoinList(coinList: List<CoinListModel>)
         fun showLoadingProgress()
         fun hideLoadingProgress()
         fun showError(error: String)
-        fun onSelectCoin(): Observable<CoinListViewModel>
+        fun onSelectCoin(): Observable<CoinListModel>
+    }
+
+    private fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job {
+        return launch(UI) { block() }
     }
 }

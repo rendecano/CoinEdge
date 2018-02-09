@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.teamdecano.cryptocoin.ico.presentation.IcoActiveView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/view_padding"
+                android:paddingRight="@dimen/view_padding"
+                android:paddingTop="@dimen/activity_padding">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvIcoActive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+    </FrameLayout>
+
+</com.teamdecano.cryptocoin.ico.presentation.IcoActiveView>

@@ -4,11 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coinlist.CoinListBuilder.CoinListScope
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
+import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListLocalRepository
+import com.teamdecano.cryptocoin.coins.coinlist.data.repository.source.CoinListNetworkRepository
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import io.objectbox.BoxStore
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -42,7 +47,10 @@ class CoinListBuilder(dependency: ParentComponent) : ViewBuilder<CoinListView, C
         return inflater.inflate(R.layout.coin_list_rib, parentViewGroup, false) as CoinListView
     }
 
-    interface ParentComponent
+    interface ParentComponent {
+
+        fun boxStore(): BoxStore
+    }
 
     @dagger.Module
     abstract class Module {
@@ -57,6 +65,27 @@ class CoinListBuilder(dependency: ParentComponent) : ViewBuilder<CoinListView, C
             @CoinListScope
             @Provides
             @JvmStatic
+            fun provideCoinService(): CoinService {
+                return CoinService()
+            }
+
+            @CoinListScope
+            @Provides
+            @JvmStatic
+            fun provideCoinListNetworkRepository(coinService: CoinService): CoinListNetworkRepository {
+                return CoinListNetworkRepository(coinService)
+            }
+
+            @CoinListScope
+            @Provides
+            @JvmStatic
+            fun provideCoinListLocalRepository(boxStore: BoxStore): CoinListLocalRepository {
+                return CoinListLocalRepository(boxStore)
+            }
+
+            @CoinListScope
+            @Provides
+            @JvmStatic
             internal fun router(
                     component: Component,
                     view: CoinListView,
@@ -64,8 +93,6 @@ class CoinListBuilder(dependency: ParentComponent) : ViewBuilder<CoinListView, C
                 return CoinListRouter(view, interactor, component)
             }
         }
-
-        // TODO: Create provider methods for dependencies created by this Rib. These should be static.
     }
 
     @CoinListScope

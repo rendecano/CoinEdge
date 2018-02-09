@@ -1,6 +1,7 @@
 package com.teamdecano.cryptocoin.coins.coinlist
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,33 +10,42 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.view.RxView
 import com.teamdecano.cryptocoin.R
+import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class CoinListAdapter(coinListViewModels: List<CoinListViewModel>, context: Context) : RecyclerView.Adapter<CoinListAdapter.ViewHolder>(), Filterable {
+class CoinListAdapter(coinListModels: List<CoinListModel>, context: Context) : RecyclerView.Adapter<CoinListAdapter.ViewHolder>(), Filterable {
 
-    private var mCoinListViewModels: List<CoinListViewModel>
-    private var mFilteredList: List<CoinListViewModel>
+    private var mCoinListModels: List<CoinListModel>
+    private var mFilteredList: List<CoinListModel>
     private var mContext: Context
-    private var mOnClickSubject: PublishSubject<CoinListViewModel>
+    private var mOnClickSubject: PublishSubject<CoinListModel>
 
     init {
-        mCoinListViewModels = coinListViewModels
-        mFilteredList = coinListViewModels
+        mCoinListModels = coinListModels
+        mFilteredList = coinListModels
         mContext = context
-        mOnClickSubject = PublishSubject.create<CoinListViewModel>()
+        mOnClickSubject = PublishSubject.create<CoinListModel>()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val coinListViewModels: CoinListViewModel = mFilteredList.get(position)
-        holder.txtSymbol.setText(coinListViewModels.name)
-        holder.txtName.setText(coinListViewModels.coinName)
+        val coinListModels: CoinListModel = mFilteredList.get(position)
+        holder.txtSymbol.text = coinListModels.name
+        holder.txtName.text = coinListModels.coinName
+        holder.txtPercentage.text = coinListModels.percentage + "%"
+        holder.txtPrice.text = "$" + coinListModels.price
+        holder.txtVolume.text = "VOL: " + coinListModels.volume
 
-        Glide.with(mContext).load(coinListViewModels.imageUrl).into(holder.imageLogo)
+        holder.txtPercentage.setTextColor(ContextCompat.getColor(mContext, R.color.colorPercentage))
+        if (holder.txtPercentage.text.contains("-")) {
+            holder.txtPercentage.setTextColor(ContextCompat.getColor(mContext, R.color.colorPercentageNegative))
+        }
+
+        Glide.with(mContext).load(coinListModels.imageUrl).into(holder.imageLogo)
 
         RxView.clicks(holder.cardView)
-                .map { coinListViewModels }.subscribe(mOnClickSubject)
+                .map { coinListModels }.subscribe(mOnClickSubject)
     }
 
     override fun getItemCount(): Int {
@@ -44,34 +54,31 @@ class CoinListAdapter(coinListViewModels: List<CoinListViewModel>, context: Cont
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        val itemView = LayoutInflater.from(parent.getContext())
+        val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.coin_list_item, parent, false)
 
         return ViewHolder(itemView)
     }
 
-    fun updateList(coinListViewModels: List<CoinListViewModel>) {
-        mCoinListViewModels = coinListViewModels
-        mFilteredList = coinListViewModels
+    fun updateList(coinListModels: List<CoinListModel>) {
+        mCoinListModels = coinListModels
+        mFilteredList = coinListModels
         notifyDataSetChanged()
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        var txtSymbol: TextView
-        var txtName: TextView
-        var imageLogo: ImageView
-        var cardView: RelativeLayout
+        var txtSymbol: TextView = view.findViewById(R.id.txt_symbol)
+        var txtName: TextView = view.findViewById(R.id.txt_name)
+        var txtPercentage: TextView = view.findViewById(R.id.txt_percent)
+        var txtPrice: TextView = view.findViewById(R.id.txt_price)
+        var txtVolume: TextView = view.findViewById(R.id.txt_volume)
+        var imageLogo: ImageView = view.findViewById(R.id.coin_logo)
+        var cardView: RelativeLayout = view.findViewById(R.id.item_root)
 
-        init {
-            txtSymbol = view.findViewById(R.id.txt_symbol)
-            txtName = view.findViewById(R.id.txt_name)
-            imageLogo = view.findViewById(R.id.coin_logo)
-            cardView = view.findViewById(R.id.item_root)
-        }
     }
 
-    fun getItemClickSignal(): Observable<CoinListViewModel> {
+    fun getItemClickSignal(): Observable<CoinListModel> {
         return mOnClickSubject
     }
 
@@ -80,17 +87,17 @@ class CoinListAdapter(coinListViewModels: List<CoinListViewModel>, context: Cont
         return (object : Filter() {
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
 
-                val charString = charSequence.toString()
+                val charString = charSequence.toString().toLowerCase()
 
                 if (charString.isEmpty()) {
 
-                    mFilteredList = mCoinListViewModels
+                    mFilteredList = mCoinListModels
 
                 } else {
 
-                    val filteredList = ArrayList<CoinListViewModel>()
+                    val filteredList = ArrayList<CoinListModel>()
 
-                    for (coin in mCoinListViewModels) {
+                    for (coin in mCoinListModels) {
 
                         if (coin.coinName!!.toLowerCase().contains(charString) || coin.name!!.toLowerCase().contains(charString)) {
 
@@ -107,7 +114,7 @@ class CoinListAdapter(coinListViewModels: List<CoinListViewModel>, context: Cont
             }
 
             override fun publishResults(p0: CharSequence?, filterResults: FilterResults) {
-                mFilteredList = filterResults.values as List<CoinListViewModel>
+                mFilteredList = filterResults.values as List<CoinListModel>
                 notifyDataSetChanged()
             }
         })

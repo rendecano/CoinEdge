@@ -7,6 +7,7 @@ import com.uber.rib.core.EmptyPresenter
 import com.uber.rib.core.InteractorBaseComponent
 import dagger.BindsInstance
 import dagger.Provides
+import io.objectbox.BoxStore
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -32,6 +33,8 @@ class CoinBuilder(dependency: ParentComponent) : Builder<CoinRouter, CoinBuilder
     interface ParentComponent {
 
         fun rootView(): RootView
+
+        fun boxStore(): BoxStore
     }
 
     @dagger.Module
@@ -50,8 +53,6 @@ class CoinBuilder(dependency: ParentComponent) : Builder<CoinRouter, CoinBuilder
         internal fun router(rootView: RootView, component: Component, interactor: CoinInteractor): CoinRouter {
             return CoinRouter(rootView, interactor, component, CoinListBuilder(component))
         }
-
-        // TODO: Create provider methods for dependencies created by this Rib. These methods should be static.
     }
 
     @CoinScope

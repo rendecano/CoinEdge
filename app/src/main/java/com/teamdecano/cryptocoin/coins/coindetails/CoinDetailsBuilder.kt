@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsBuilder.CoinDetailsScope
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
@@ -45,7 +47,7 @@ class CoinDetailsBuilder(dependency: ParentComponent) : ViewBuilder<CoinDetailsV
         return inflater.inflate(R.layout.coin_details_rib, parentViewGroup, false) as CoinDetailsView
     }
 
-    interface ParentComponent// TODO: Define dependencies required from your parent interactor here.
+    interface ParentComponent
 
     @dagger.Module
     abstract class Module {
@@ -60,6 +62,13 @@ class CoinDetailsBuilder(dependency: ParentComponent) : ViewBuilder<CoinDetailsV
             @CoinDetailsScope
             @Provides
             @JvmStatic
+            internal fun provideCoinService(): CoinService {
+                return CoinService()
+            }
+
+            @CoinDetailsScope
+            @Provides
+            @JvmStatic
             internal fun router(
                     component: Component,
                     view: CoinDetailsView,
@@ -67,8 +76,6 @@ class CoinDetailsBuilder(dependency: ParentComponent) : ViewBuilder<CoinDetailsV
                 return CoinDetailsRouter(view, interactor, component)
             }
         }
-
-        // TODO: Create provider methods for dependencies created by this Rib. These should be static.
     }
 
     @CoinDetailsScope

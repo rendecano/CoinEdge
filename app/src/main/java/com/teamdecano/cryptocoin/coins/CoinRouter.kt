@@ -11,28 +11,31 @@ import com.uber.rib.core.Router
  * TODO describe the possible child configurations of this scope.
  */
 class CoinRouter(
-        private val rootView: RootView,
+        val rootView: RootView,
         interactor: CoinInteractor,
         component: CoinBuilder.Component,
-        private val coinListBuilder: CoinListBuilder) : Router<CoinInteractor, CoinBuilder.Component>(interactor, component) {
+        val coinListBuilder: CoinListBuilder) : Router<CoinInteractor, CoinBuilder.Component>(interactor, component) {
 
-    private lateinit var coinListRouter: CoinListRouter
+    private var coinListRouter: CoinListRouter? = null
 
     fun routeToCoinList() {
 
-        coinListRouter = coinListBuilder.build(rootView)
+        coinListRouter = coinListBuilder.build(rootView.viewContent())
         attachChild(coinListRouter)
-        rootView.addView(coinListRouter.view)
+        rootView.viewContent().addView(coinListRouter?.view)
     }
 
     fun detachCoinList() {
 
+        if (coinListRouter != null) {
+            detachChild(coinListRouter)
+            rootView.viewContent().removeView(coinListRouter?.view)
+            coinListRouter = null
+        }
     }
 
     override fun willDetach() {
         super.willDetach()
         detachCoinList()
-
     }
-
 }

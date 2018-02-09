@@ -3,15 +3,16 @@ package com.teamdecano.cryptocoin.coins.coindetails
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.teamdecano.cryptocoin.services.CoinService
-import com.teamdecano.cryptocoin.services.model.CoinDetails
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
+import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
 import io.reactivex.Observable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 /**
@@ -31,74 +32,72 @@ class CoinDetailsInteractor : Interactor<CoinDetailsInteractor.CoinDetailsPresen
     @Inject
     lateinit var context: Context
 
+    @Inject
+    lateinit var coinService: CoinService
+
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
 
-        var coinService = CoinService()
-
         presenter.showLoadingProgress()
 
-        // TODO: Refactor this code to use Kotlin's coroutines. Nice!!!
-        coinService.getCoinDetails(coinId).enqueue(object : Callback<CoinDetails> {
 
-            override fun onFailure(call: Call<CoinDetails>?, t: Throwable?) {
+        presenter.showWebsite().subscribe(
+                { url ->
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(browserIntent)
 
-                presenter.showError(t!!.message.toString())
-                presenter.hideLoadingProgress()
+                })
 
-            }
-
-            override fun onResponse(call: Call<CoinDetails>?, response: Response<CoinDetails>) {
-
-                if (response?.body() != null && response.isSuccessful) {
-
-                    val baseUrl = response.body()?.data?.seo?.baseImageUrl
-                    val general = response.body()?.data?.general
-                    val ico = response.body()?.data?.ico
-
-                    if (general != null && ico != null) {
-
-                        val coinDetails = CoinDetailsViewModel(general.name,
-                                general.symbol,
-                                general.description,
-                                general.technology,
-                                general.features,
-                                baseUrl + general.imageUrl,
-                                general.totalCoinSupply,
-                                general.startDate,
-                                if (!general.affiliateUrl.isNullOrEmpty() && general.affiliateUrl!!.contains("http")) general.affiliateUrl else "",
-                                general.twitter,
-                                baseUrl + general.sponsor?.imageUrl,
-                                ico.status,
-                                ico.description,
-                                ico.icoTokenSupply,
-                                ico.fundingTarget,
-                                ico.whitePaperLink)
-
-                        presenter.showDetails(coinDetails)
+        presenter.showTwitter().subscribe(
+                { twitterUsername ->
+                    try {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterUsername)))
+                    } catch (e: Exception) {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/#!/" + twitterUsername)))
                     }
+                })
 
-                } else {
-                    presenter.showError("Ooops. An error occured. Please try again.")
-                }
+        getDetailsFromNetwork()
+    }
 
+    private fun getDetailsFromNetwork() {
+
+        launchAsync {
+
+            try {
+
+                val coinDetailsObject = coinService.getCoinDetails(coinId)
+
+                val baseUrl = coinDetailsObject.data.seo.baseImageUrl
+                val general = coinDetailsObject.data.general
+                val ico = coinDetailsObject.data.ico
+
+                val coinDetails = CoinDetailsViewModel(general.name,
+                        general.symbol,
+                        general.description,
+                        general.technology,
+                        general.features,
+                        baseUrl + general.imageUrl,
+                        general.totalCoinSupply,
+                        general.startDate,
+                        if (!general.affiliateUrl.isNullOrEmpty() && general.affiliateUrl!!.contains("http")) general.affiliateUrl else "",
+                        general.twitter,
+                        baseUrl + general.sponsor?.imageUrl,
+                        ico.status,
+                        ico.description,
+                        ico.icoTokenSupply,
+                        ico.fundingTarget,
+                        ico.whitePaperLink)
+
+                presenter.showDetails(coinDetails)
+                presenter.hideLoadingProgress()
+
+
+            } catch (exception: Exception) {
+                presenter.showError("Ooops. An error occured. Please try again.")
                 presenter.hideLoadingProgress()
             }
-        })
-
-        presenter.showWebsite().subscribe({ url ->
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(browserIntent)
-
-        })
-
-        presenter.showTwitter().subscribe({ twitterUsername ->
-            try {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterUsername)))
-            } catch (e: Exception) {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/#!/" + twitterUsername)))
-            }
-        })
+        }
     }
 
     /**
@@ -115,4 +114,8 @@ class CoinDetailsInteractor : Interactor<CoinDetailsInteractor.CoinDetailsPresen
     }
 
     interface Listener
+
+    private fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job {
+        return launch(UI) { block() }
+    }
 }

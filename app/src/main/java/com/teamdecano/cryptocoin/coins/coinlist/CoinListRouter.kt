@@ -1,8 +1,8 @@
 package com.teamdecano.cryptocoin.coins.coinlist
 
 import android.content.Intent
-import android.view.View
 import com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsActivity
+import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 
 import com.uber.rib.core.ViewRouter
 
@@ -16,10 +16,10 @@ class CoinListRouter(
         interactor: CoinListInteractor,
         component: CoinListBuilder.Component) : ViewRouter<CoinListView, CoinListInteractor, CoinListBuilder.Component>(view, interactor, component) {
 
-    fun routeToCoinDetails(coinListViewModel: CoinListViewModel) {
+    fun routeToCoinDetails(coinListModel: CoinListModel) {
 
         val intent = Intent(view.context, CoinDetailsActivity::class.java)
-        intent.putExtra("coinId", coinListViewModel.id)
+        intent.putExtra("coinId", coinListModel.id)
         view.context.startActivity(intent)
 
     }

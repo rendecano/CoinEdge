@@ -18,4 +18,10 @@ class CoinInteractor : Interactor<EmptyPresenter, CoinRouter>() {
 
         router.routeToCoinList()
     }
+
+    override fun willResignActive() {
+        super.willResignActive()
+
+        router.detachCoinList()
+    }
 }

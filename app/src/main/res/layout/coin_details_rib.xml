@@ -150,13 +150,12 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
             app:lottie_autoPlay="true"
-            app:lottie_colorFilter="@color/colorPrimary"
             app:lottie_enableMergePathsForKitKatAndAbove="true"
-            app:lottie_fileName="loader.json"
+            app:lottie_fileName="smiley_stack.json"
             app:lottie_loop="true" />
 
     </FrameLayout>

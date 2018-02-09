@@ -9,6 +9,9 @@ def versions = [
         kotlinPlugin: '1.1.51',
         uberCore    : '0.9.1',
         retrofit    : "2.3.0",
+        lottie      : "2.3.0",
+        glide       : "4.4.0",
+        mockito     : "2.13.0"
 ]
 
 def apt = [
@@ -54,17 +57,20 @@ def support = [
         constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
         design          : "com.android.support:design:${versions.support}",
         recyclerView    : "com.android.support:recyclerview-v7:${versions.support}",
-        cardView        : "com.android.support:cardview-v7:${versions.support}"
+        cardView        : "com.android.support:cardview-v7:${versions.support}",
+        palette         : "com.android.support:palette-v7:${versions.support}"
 ]
 
 def kotlin = [
-        kotlinStdLib: "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlinPlugin}"
-
+        kotlinStdLib            : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlinPlugin}",
+        kotlinCoroutinesCore    : "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21.2",
+        kotlinCoroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.21.2",
+        kotlinCoroutinesRetrofit: "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0",
 ]
 
 def test = [
         junit         : "junit:junit:4.12",
-        mockito       : "org.mockito:mockito-core:2.0.42-beta",
+        mockito       : "org.mockito:mockito-core:${versions.mockito}",
         assertj       : "org.assertj:assertj-core:2.6.0",
         compileTesting: "com.google.testing.compile:compile-testing:0.11",
 ]
@@ -100,6 +106,12 @@ def retrofit = [
         gsonConverter: "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
 ]
 
+def ui = [
+        lottie       : "com.airbnb.android:lottie:${versions.lottie}",
+        glide        : "com.github.bumptech.glide:glide:${versions.glide}",
+        glideCompiler: "com.github.bumptech.glide:compiler:${versions.glide}"
+]
+
 ext.deps = [
         "apt"     : apt,
         "build"   : build,
@@ -110,4 +122,5 @@ ext.deps = [
         "uber"    : uber,
         "kotlin"  : kotlin,
         "retrofit": retrofit,
+        "ui"      : ui,
 ]

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Coin Edge</string>
+
+    <string name="coin_list_title">@string/app_name</string>
+    <string name="ico_list_title">ICO List</string>
+    <string name="converter_title">Crypto Converter</string>
+    <string name="settings_title">Settings</string>
 </resources>

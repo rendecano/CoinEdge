@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#053b93</color>
-    <color name="colorPrimaryDark">#031168</color>
-    <color name="colorAccent">#259af9</color>
+    <color name="colorPrimary">#2b2828</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#60d9f4</color>
+    <color name="colorTransparentButtonText">#00b8d4</color>
 
     <color name="colorProgress">#f2f4f5</color>
     <color name="colorBg">#f2f4f5</color>
     <color name="colorWhite">#ffffff</color>
 
-    <color name="dividerColor">#bcb8b8</color>
+    <color name="dividerColor">#d7d7d7</color>
+
+    <color name="colorTextSecondary">#8f8f8f</color>
+    <color name="colorPercentage">#00c853</color>
+    <color name="colorPercentageNegative">#c62828</color>
+    <color name="colorTab">#424242</color>
+
 </resources>

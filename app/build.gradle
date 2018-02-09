@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox'
 
 android {
 
@@ -26,26 +28,37 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+}
+
 kapt {
     generateStubs = true
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Google/Android
-    implementation deps.kotlin.kotlinStdLib
     implementation deps.support.appCompat
     implementation deps.support.recyclerView
     implementation deps.support.constraintLayout
     implementation deps.support.design
     implementation deps.support.cardView
-    implementation 'com.android.support:palette-v7:27.0.2'
+    implementation deps.support.appCompatv4
+    implementation deps.support.palette
     compile deps.build.guava
 
-    implementation deps.support.appCompatv4
+    // Objectbox DB
+    implementation "io.objectbox:objectbox-android:1.4.1"
+    implementation "io.objectbox:objectbox-kotlin:1.4.1"
+    kapt "io.objectbox:objectbox-processor:1.4.1"
 
+    // Kotlin
+    implementation deps.kotlin.kotlinStdLib
+    implementation deps.kotlin.kotlinCoroutinesCore
+    implementation deps.kotlin.kotlinCoroutinesAndroid
+    implementation deps.kotlin.kotlinCoroutinesRetrofit
 
     // Uber
     kapt deps.uber.compilerTest
@@ -73,18 +86,17 @@ dependencies {
     implementation deps.retrofit.adapterRxJava
     implementation deps.retrofit.gsonConverter
 
-    compile 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-
     // Auto value
     kapt deps.apt.autoValue
     provided deps.apt.autoValueAnnotations
 
     // Test
     testImplementation deps.test.junit
+    testCompile deps.test.mockito
 
     // UI
-    implementation 'com.airbnb.android:lottie:2.3.0'
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
-
+    implementation deps.ui.lottie
+    implementation deps.ui.glide
+    annotationProcessor deps.ui.glideCompiler
+    implementation 'com.github.Shashank02051997:FancyToast-Android:0.1.3'
 }

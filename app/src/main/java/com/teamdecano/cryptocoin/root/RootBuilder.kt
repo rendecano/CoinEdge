@@ -5,13 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.CoinBuilder
-import com.teamdecano.cryptocoin.coins.coinlist.CoinListView
+import com.teamdecano.cryptocoin.common.screen_stack.ScreenStack
+import com.teamdecano.cryptocoin.ico.IcoBuilder
+import com.teamdecano.cryptocoin.navigation.NavigationBuilder
+import com.teamdecano.cryptocoin.navigation.NavigationInteractor
 import com.teamdecano.cryptocoin.root.RootBuilder.RootScope
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import io.objectbox.BoxStore
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -30,7 +34,7 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
      * @param parentViewGroup parent view group that this router's view will be added to.
      * @return a new [RootRouter].
      */
-    fun build(context: Context, parentViewGroup: ViewGroup): RootRouter {
+    fun build(context: Context, parentViewGroup: ViewGroup, boxStore: BoxStore): RootRouter {
         val view = createView(parentViewGroup)
         val interactor = RootInteractor()
         val component = DaggerRootBuilder_Component.builder()
@@ -38,6 +42,7 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
                 .view(view)
                 .interactor(interactor)
                 .provideContext(context)
+                .provideBoxstore(boxStore)
                 .build()
         return component.rootRouter()
     }
@@ -61,11 +66,27 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
             @RootScope
             @Provides
             @JvmStatic
+            internal fun provideNavigationListener(rootInteractor: RootInteractor): NavigationInteractor.Listener {
+                return rootInteractor.NavigationListener()
+            }
+
+            @RootScope
+            @Provides
+            @JvmStatic
+            internal fun screenStack(rootView: RootView): ScreenStack {
+                return ScreenStack(rootView.viewContent())
+            }
+
+
+            @RootScope
+            @Provides
+            @JvmStatic
             internal fun router(
                     component: Component,
                     view: RootView,
-                    interactor: RootInteractor): RootRouter {
-                return RootRouter(view, interactor, component, CoinBuilder(component))
+                    interactor: RootInteractor,
+                    stack: ScreenStack): RootRouter {
+                return RootRouter(view, stack, interactor, component, NavigationBuilder(component), CoinBuilder(component), IcoBuilder(component))
             }
         }
     }
@@ -73,7 +94,9 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
     @RootScope
     @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
     interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent,
-            CoinBuilder.ParentComponent {
+            NavigationBuilder.ParentComponent,
+            CoinBuilder.ParentComponent,
+            IcoBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {
@@ -87,6 +110,9 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
 
             @BindsInstance
             fun provideContext(context: Context): Builder
+
+            @BindsInstance
+            fun provideBoxstore(boxStore: BoxStore): Builder
 
             fun build(): Component
         }

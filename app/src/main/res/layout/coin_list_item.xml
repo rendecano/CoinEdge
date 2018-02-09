@@ -1,58 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="1dp"
-    app:cardUseCompatPadding="true">
+    android:layout_marginBottom="@dimen/view_padding"
+    android:layout_marginTop="@dimen/view_padding"
+    android:animateLayoutChanges="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_padding"
+    android:paddingRight="@dimen/view_padding"
+    tools:background="@color/colorWhite">
 
-    <RelativeLayout
-        android:id="@+id/item_root"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/coin_logo"
+        android:animateLayoutChanges="true"
+        android:gravity="left"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/view_padding"
-        android:paddingLeft="@dimen/activity_padding"
-        android:paddingRight="@dimen/view_padding"
-        android:paddingTop="@dimen/view_padding"
-        tools:background="@color/colorWhite">
+        android:paddingLeft="@dimen/activity_padding">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/txt_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="right"
-            android:orientation="vertical">
+            android:fontFamily="@font/orbitron"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            tools:text="BTC" />
 
-            <TextView
-                android:id="@+id/txt_symbol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="BTC" />
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/orbitron"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="14sp"
+            tools:text="Bitcoin" />
 
-            <TextView
-                android:id="@+id/txt_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/dividerColor"
-                android:textSize="16sp"
-                tools:text="Bitcoin" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/coin_logo"
+        android:animateLayoutChanges="true"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_padding">
 
-        <ImageView
-            android:id="@+id/coin_logo"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+        <TextView
+            android:id="@+id/txt_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/orbitron"
+            android:textColor="@color/colorPercentage"
+            android:textSize="16sp" />
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/txt_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txt_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/coin_logo"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_launcher" />
+
+</RelativeLayout>
