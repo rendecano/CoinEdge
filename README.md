@@ -18,10 +18,10 @@ CryptoCompare
 - https://www.cryptocompare.com/api/
 
 Chasing Coins
-https://chasing-coins.com/api
+- https://chasing-coins.com/api
 
 CoinMarketCap
-https://coinmarketcap.com/api/
+- https://coinmarketcap.com/api/
 
 # UI
  - Lottie
