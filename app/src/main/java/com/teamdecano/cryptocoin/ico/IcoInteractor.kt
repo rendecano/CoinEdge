@@ -1,6 +1,7 @@
 package com.teamdecano.cryptocoin.ico
 
 import com.teamdecano.cryptocoin.ico.data.model.IcoItem
+import com.teamdecano.cryptocoin.ico.data.repository.source.IcoListLocalRepository
 import com.teamdecano.cryptocoin.ico.data.repository.source.IcoListNetworkRepository
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
@@ -24,12 +25,33 @@ class IcoInteractor : Interactor<IcoInteractor.IcoPresenter, IcoRouter>() {
     lateinit var presenter: IcoPresenter
 
     @Inject
+    lateinit var icoListLocalRepository: IcoListLocalRepository
+
+    @Inject
     lateinit var icoListNetworkRepository: IcoListNetworkRepository
 
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
 
+        getCachedContents()
         updateListFromNetwork()
+    }
+
+    private fun getCachedContents() {
+
+        launchAsync {
+
+            try {
+
+                val coinList = icoListLocalRepository.getList()
+                presenter.loadActiveIco(coinList.await())
+
+            } catch (exception: Exception) {
+
+                presenter.showError("Error occured")
+                presenter.hideLoadingProgress()
+            }
+        }
     }
 
     private fun updateListFromNetwork() {
@@ -40,9 +62,10 @@ class IcoInteractor : Interactor<IcoInteractor.IcoPresenter, IcoRouter>() {
 
                 val icoActiveList = icoListNetworkRepository.getActiveIcoList()
                 val icoUpcomingList = icoListNetworkRepository.getUpcomingIcoList()
-                var list = listOf<List<IcoItem>>(icoActiveList, icoUpcomingList)
+                icoListLocalRepository.updateList(icoActiveList, icoUpcomingList)
+                var list = icoListLocalRepository.getList()
 
-                presenter.loadActiveIco(list)
+                presenter.loadActiveIco(list.await())
                 presenter.hideLoadingProgress()
 
             } catch (exception: Exception) {

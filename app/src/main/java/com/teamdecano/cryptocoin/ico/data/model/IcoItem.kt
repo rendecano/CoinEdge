@@ -15,4 +15,5 @@ data class IcoItem(@Id var id: Long,
                    @SerializedName("url") var url: String? = "",
                    @SerializedName("start_time") var startTime: String? = "",
                    @SerializedName("end_time") var endTime: String? = "",
-                   @SerializedName("description") var description: String? = "")
+                   @SerializedName("description") var description: String? = "",
+                   var type: Int)

@@ -1,12 +1,13 @@
 package com.teamdecano.cryptocoin.coins.coinlist.data.repository.source
 
-import com.teamdecano.cryptocoin.coins.coinlist.data.model.*
+import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinList
+import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCcc
+import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCcc_
+import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCmc
 import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
-import io.objectbox.query.Query
-import io.objectbox.query.QueryBuilder
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -16,10 +17,10 @@ import kotlinx.coroutines.experimental.async
  */
 class CoinListLocalRepository(boxStore: BoxStore) {
 
-    private var coinListCccBox: Box<CoinListCcc> = boxStore.boxFor<CoinListCcc>()
-    private var coinListCmcBox: Box<CoinListCmc> = boxStore.boxFor<CoinListCmc>()
+    private var coinListCccBox: Box<CoinListCcc> = boxStore.boxFor()
+    private var coinListCmcBox: Box<CoinListCmc> = boxStore.boxFor()
 
-    fun getList(): Deferred<List<CoinListModel>>{
+    fun getList(): Deferred<List<CoinListModel>> {
 
         return async(CommonPool) {
 
@@ -36,8 +37,7 @@ class CoinListLocalRepository(boxStore: BoxStore) {
             var coinList = ArrayList<CoinListModel>()
             val baseUrl = "https://chasing-coins.com/api/v1/std/logo/"
 
-            for (coin in coinsCmc) {
-
+            coinsCmc.forEach { coin ->
                 val id = coinListCccBox.query().equal(CoinListCcc_.coinSymbol, coin.symbol).build().findFirst()?.coinId
 
                 coinList.add(CoinListModel(id,
@@ -67,7 +67,7 @@ class CoinListLocalRepository(boxStore: BoxStore) {
 
             // Save to coinListObject to DB
             val coinCccList = ArrayList<CoinListCcc>()
-            coinListObject.feeds!!.values!!.mapTo(coinCccList) {
+            coinListObject.feeds!!.values.mapTo(coinCccList) {
                 CoinListCcc(coinId = it.id,
                         coinSymbol = it.name)
             }

@@ -15,7 +15,6 @@ import com.teamdecano.cryptocoin.ico.data.model.IcoItem
 import com.teamdecano.cryptocoin.ico.presentation.IcoActiveView
 import kotlinx.android.synthetic.main.ico_rib.view.*
 
-
 /**
  * Top level view for {@link IcoBuilder.IcoScope}.
  */
@@ -42,7 +41,6 @@ class IcoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         private var listIcoItems: List<List<IcoItem>> = ArrayList<ArrayList<IcoItem>>()
 
         fun setItems(ico: List<List<IcoItem>>) {
-
             listIcoItems = ico
             notifyDataSetChanged()
         }
@@ -61,7 +59,6 @@ class IcoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 context.startActivity(browserIntent)
 
             })
-
 
             collection.addView(layout)
             return layout

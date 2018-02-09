@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
+import com.teamdecano.cryptocoin.ico.data.repository.source.IcoListLocalRepository
 import com.teamdecano.cryptocoin.ico.data.repository.source.IcoListNetworkRepository
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
@@ -70,6 +71,13 @@ class IcoBuilder(dependency: ParentComponent) : ViewBuilder<IcoView, IcoRouter, 
             @JvmStatic
             internal fun provideIcoListNetworkRepository(icoService: IcoService): IcoListNetworkRepository {
                 return IcoListNetworkRepository(icoService)
+            }
+
+            @IcoScope
+            @Provides
+            @JvmStatic
+            internal fun provideIcoListLocalRepository(boxStore: BoxStore): IcoListLocalRepository {
+                return IcoListLocalRepository(boxStore)
             }
 
             @IcoScope
