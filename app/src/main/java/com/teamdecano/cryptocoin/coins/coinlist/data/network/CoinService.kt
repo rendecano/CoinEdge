@@ -1,5 +1,6 @@
 package com.teamdecano.cryptocoin.coins.coinlist.data.network
 
+import com.teamdecano.cryptocoin.coins.coindetails.data.model.SocialStats
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinDetails
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinList
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCmc
@@ -27,5 +28,12 @@ class CoinService(val okHttpClient: OkHttpClient) {
 
         val coinApi = CoinApi.create("https://www.cryptocompare.com/", okHttpClient)
         return coinApi.getCoinDetails(coinId).await()
+    }
+
+
+    suspend fun getSocialStats(coinId: String): SocialStats {
+
+        val coinApi = CoinApi.create("https://www.cryptocompare.com/", okHttpClient)
+        return coinApi.getSocialStats(coinId).await()
     }
 }

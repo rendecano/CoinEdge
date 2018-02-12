@@ -3,8 +3,9 @@ package com.teamdecano.cryptocoin.coins.coindetails
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.teamdecano.cryptocoin.coins.coindetails.data.repository.source.CoinDetailsLocalRepository
+import com.teamdecano.cryptocoin.coins.coindetails.data.repository.source.CoinDetailsNetworkRepository
 import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
-import com.teamdecano.cryptocoin.coins.coinlist.data.network.IcoService
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
@@ -33,7 +34,10 @@ class CoinDetailsInteractor : Interactor<CoinDetailsInteractor.CoinDetailsPresen
     lateinit var context: Context
 
     @Inject
-    lateinit var coinService: CoinService
+    lateinit var coinDetailsNetworkRepository: CoinDetailsNetworkRepository
+
+    @Inject
+    lateinit var coinDetailsLocalRepository: CoinDetailsLocalRepository
 
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
@@ -50,14 +54,27 @@ class CoinDetailsInteractor : Interactor<CoinDetailsInteractor.CoinDetailsPresen
 
         presenter.showTwitter().subscribe(
                 { twitterUsername ->
-                    try {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterUsername)))
-                    } catch (e: Exception) {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/#!/" + twitterUsername)))
-                    }
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(twitterUsername)))
                 })
 
+        getCachedContents()
         getDetailsFromNetwork()
+    }
+
+    private fun getCachedContents() {
+        launchAsync {
+
+            try {
+
+                val coinDetails = coinDetailsLocalRepository.getCoinDetails(coinId) ?: CoinDetailsViewModel()
+                presenter.showDetails(coinDetails)
+
+            } catch (exception: Exception) {
+
+                presenter.showError("Ooops. An error occured. Please try again.")
+                presenter.hideLoadingProgress()
+            }
+        }
     }
 
     private fun getDetailsFromNetwork() {
@@ -66,28 +83,12 @@ class CoinDetailsInteractor : Interactor<CoinDetailsInteractor.CoinDetailsPresen
 
             try {
 
-                val coinDetailsObject = coinService.getCoinDetails(coinId)
+                val coinDetailsObject = coinDetailsNetworkRepository.getCoinDetails(coinId)
+                val coinSocialStats = coinDetailsNetworkRepository.getSocialStats(coinId)
+                coinDetailsLocalRepository.updateList(coinDetailsObject, coinSocialStats)
+                val coinDetails = coinDetailsLocalRepository.getCoinDetails(coinId) ?: CoinDetailsViewModel()
 
-                val baseUrl = coinDetailsObject.data.seo.baseImageUrl
-                val general = coinDetailsObject.data.general
-                val ico = coinDetailsObject.data.ico
-
-                val coinDetails = CoinDetailsViewModel(general.name,
-                        general.symbol,
-                        general.description,
-                        general.technology,
-                        general.features,
-                        baseUrl + general.imageUrl,
-                        general.totalCoinSupply,
-                        general.startDate,
-                        if (!general.affiliateUrl.isNullOrEmpty() && general.affiliateUrl!!.contains("http")) general.affiliateUrl else "",
-                        general.twitter,
-                        baseUrl + general.sponsor?.imageUrl,
-                        ico.status,
-                        ico.description,
-                        ico.icoTokenSupply,
-                        ico.fundingTarget,
-                        ico.whitePaperLink)
+                // try to use live data
 
                 presenter.showDetails(coinDetails)
                 presenter.hideLoadingProgress()

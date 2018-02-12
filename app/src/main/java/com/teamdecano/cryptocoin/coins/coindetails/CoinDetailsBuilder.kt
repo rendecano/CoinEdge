@@ -5,12 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.teamdecano.cryptocoin.R
 import com.teamdecano.cryptocoin.coins.coindetails.CoinDetailsBuilder.CoinDetailsScope
+import com.teamdecano.cryptocoin.coins.coindetails.data.repository.source.CoinDetailsLocalRepository
+import com.teamdecano.cryptocoin.coins.coindetails.data.repository.source.CoinDetailsNetworkRepository
+import com.teamdecano.cryptocoin.coins.coinlist.CoinListBuilder
 import com.teamdecano.cryptocoin.coins.coinlist.data.network.CoinService
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.io.File
@@ -85,11 +90,41 @@ class CoinDetailsBuilder(dependency: ParentComponent) : ViewBuilder<CoinDetailsV
             @CoinDetailsScope
             @Provides
             @JvmStatic
+            fun provideCoinDetailsNetworkRepository(coinService: CoinService): CoinDetailsNetworkRepository {
+                return CoinDetailsNetworkRepository(coinService)
+            }
+
+            @CoinDetailsScope
+            @Provides
+            @JvmStatic
+            fun provideCoinDetailsLocalRepository(realm: Realm): CoinDetailsLocalRepository {
+                return CoinDetailsLocalRepository(realm)
+            }
+
+            @CoinDetailsScope
+            @Provides
+            @JvmStatic
             internal fun router(
                     component: Component,
                     view: CoinDetailsView,
                     interactor: CoinDetailsInteractor): CoinDetailsRouter {
                 return CoinDetailsRouter(view, interactor, component)
+            }
+
+            @CoinDetailsScope
+            @Provides
+            @JvmStatic
+            internal fun realm(): Realm {
+
+                // TODO: Find ways to implement this properly
+                val stringKey = "d2345678e012345678901c3456789012a456789012n45678901234o678901227"
+
+                val realmConfiguration = RealmConfiguration.Builder()
+                        .encryptionKey(stringKey.toByteArray())
+                        .name("coinedge.realm")
+                        .deleteRealmIfMigrationNeeded()
+                        .build()
+                return Realm.getInstance(realmConfiguration)
             }
         }
     }

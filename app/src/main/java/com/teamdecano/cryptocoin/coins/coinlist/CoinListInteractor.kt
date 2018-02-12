@@ -64,11 +64,11 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
             try {
 
                 val coinList = coinListLocalRepository.getList()
-                presenter.showCoinList(coinList.await())
+                presenter.showCoinList(coinList)
 
             } catch (exception: Exception) {
 
-                presenter.showError("Error occured")
+                presenter.showError("Ooops. An error occured. Please try again.")
                 presenter.hideLoadingProgress()
             }
         }
@@ -85,12 +85,12 @@ class CoinListInteractor : Interactor<CoinListInteractor.CoinListPresenter, Coin
                 coinListLocalRepository.updateList(coinListObjectCmc, coinListObject)
                 val coinList = coinListLocalRepository.getList()
 
-                presenter.showCoinList(coinList.await())
+                presenter.showCoinList(coinList)
                 presenter.hideLoadingProgress()
 
             } catch (exception: Exception) {
 
-                presenter.showError("Error occured")
+                presenter.showError("Ooops. An error occured. Please try again.")
                 presenter.hideLoadingProgress()
             }
         }

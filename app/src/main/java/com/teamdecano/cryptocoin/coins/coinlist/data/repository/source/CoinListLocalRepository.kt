@@ -8,9 +8,6 @@ import com.teamdecano.cryptocoin.coins.coinlist.presentation.CoinListModel
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 
 /**
  * Created by rendecano on 7/2/18.
@@ -22,61 +19,56 @@ class CoinListLocalRepository(boxStore: BoxStore) {
     private var coinListCccBox: Box<CoinListCcc> = boxStore.boxFor()
     private var coinListCmcBox: Box<CoinListCmc> = boxStore.boxFor()
 
-    fun getList(): Deferred<List<CoinListModel>> {
+    suspend fun getList(): List<CoinListModel> {
 
-        return async(CommonPool) {
-
-            // Get all coins from Cmc
-            val coinListCmcQuery = coinListCmcBox.query().sort { a, b ->
-                when {
-                    a.rank!!.toInt() != b.rank!!.toInt() -> a.rank!!.toInt() - b.rank!!.toInt()
-                    else -> a.rank!!.toInt() - b.rank!!.toInt()
-                }
-            }.build()
-
-            val coinsCmc = coinListCmcQuery.find()
-            val coinList = ArrayList<CoinListModel>()
-
-            coinsCmc.forEach { coin ->
-
-                coinList.add(CoinListModel("",
-                        BASE_IMAGE_URL + coin.symbol,
-                        coin.symbol,
-                        coin.name,
-                        coin.percentChange24h,
-                        coin.priceUsd,
-                        coin._24hVolumeUsd,
-                        coin.rank))
+        // Get all coins from Cmc
+        val coinListCmcQuery = coinListCmcBox.query().sort { a, b ->
+            when {
+                a.rank!!.toInt() != b.rank!!.toInt() -> a.rank!!.toInt() - b.rank!!.toInt()
+                else -> a.rank!!.toInt() - b.rank!!.toInt()
             }
+        }.build()
 
-            coinList
+        val coinsCmc = coinListCmcQuery.find()
+        val coinList = ArrayList<CoinListModel>()
+
+        coinsCmc.forEach { coin ->
+
+            coinList.add(CoinListModel("",
+                    BASE_IMAGE_URL + coin.symbol,
+                    coin.symbol,
+                    coin.name,
+                    coin.percentChange24h,
+                    coin.priceUsd,
+                    coin._24hVolumeUsd,
+                    coin.rank))
         }
+
+        return coinList
     }
 
-    fun updateList(coinListObjectCmc: List<CoinListCmc>, coinListObject: CoinList) {
+    suspend fun updateList(coinListObjectCmc: List<CoinListCmc>, coinListObject: CoinList) {
 
-        async(CommonPool) {
+        // Save to coinListObjectCmc to DB
+        // Delete all
+        coinListCmcBox.removeAll()
 
-            // Save to coinListObjectCmc to DB
-            // Delete all
-            coinListCmcBox.removeAll()
+        // Insert all
+        coinListCmcBox.put(coinListObjectCmc)
 
-            // Insert all
-            coinListCmcBox.put(coinListObjectCmc)
-
-            // Save to coinListObject to DB
-            val coinCccList = ArrayList<CoinListCcc>()
-            coinListObject.feeds!!.values.mapTo(coinCccList) {
-                CoinListCcc(coinId = it.id,
-                        coinSymbol = it.name)
-            }
-
-            // Delete all
-            coinListCccBox.removeAll()
-
-            // Insert all
-            coinListCccBox.put(coinCccList)
+        // Save to coinListObject to DB
+        val coinCccList = ArrayList<CoinListCcc>()
+        coinListObject.feeds!!.values.mapTo(coinCccList) {
+            CoinListCcc(coinId = it.id,
+                    coinSymbol = it.name)
         }
+
+        // Delete all
+        coinListCccBox.removeAll()
+
+        // Insert all
+        coinListCccBox.put(coinCccList)
+
     }
 
     fun getId(symbol: String): String? {

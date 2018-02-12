@@ -6,7 +6,6 @@ import com.teamdecano.cryptocoin.ico.data.repository.source.IcoListNetworkReposi
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
-import io.reactivex.Observable
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -48,7 +47,7 @@ class IcoInteractor : Interactor<IcoInteractor.IcoPresenter, IcoRouter>() {
 
             } catch (exception: Exception) {
 
-                presenter.showError("Error occured")
+                presenter.showError("Ooops. An error occured. Please try again.")
                 presenter.hideLoadingProgress()
             }
         }
@@ -63,14 +62,14 @@ class IcoInteractor : Interactor<IcoInteractor.IcoPresenter, IcoRouter>() {
                 val icoActiveList = icoListNetworkRepository.getActiveIcoList()
                 val icoUpcomingList = icoListNetworkRepository.getUpcomingIcoList()
                 icoListLocalRepository.updateList(icoActiveList, icoUpcomingList)
-                var list = icoListLocalRepository.getList()
+                var list = icoListLocalRepository.getList().await()
 
-                presenter.loadActiveIco(list.await())
+                presenter.loadActiveIco(list)
                 presenter.hideLoadingProgress()
 
             } catch (exception: Exception) {
 
-                presenter.showError("Error occured")
+                presenter.showError("Ooops. An error occured. Please try again.")
                 presenter.hideLoadingProgress()
             }
         }

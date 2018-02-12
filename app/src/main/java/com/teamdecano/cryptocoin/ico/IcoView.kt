@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -71,6 +72,10 @@ class IcoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             return listIcoItems.size
         }
 
+        override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+            (container as ViewPager).removeView(obj as View)
+        }
+
         override fun getPageTitle(position: Int): CharSequence? {
             if (position == 0) {
                 return "ACTIVE"
@@ -82,6 +87,7 @@ class IcoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     override fun loadActiveIco(icoList: List<List<IcoItem>>) {
         adapter.setItems(icoList)
+        viewPager.adapter = adapter
     }
 
     override fun showLoadingProgress() {

@@ -1,18 +1,16 @@
 package com.teamdecano.cryptocoin.coins.coinlist.data.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.teamdecano.cryptocoin.coins.coindetails.data.model.SocialStats
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinDetails
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinList
 import com.teamdecano.cryptocoin.coins.coinlist.data.model.CoinListCmc
 import kotlinx.coroutines.experimental.Deferred
-import okhttp3.Cache
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.io.File
 
 
 /**
@@ -29,8 +27,8 @@ interface CoinApi {
     @GET("/api/data/coinsnapshotfullbyid")
     fun getCoinDetails(@Query("id") id: String): Deferred<CoinDetails>
 
-    @GET("/data/price")
-    fun getCoinPrice(@Query("fsym") fromSymbol: String, @Query("tsym") toSymbol: String): Call<Map<String, String>>
+    @GET("/api/data/socialstats")
+    fun getSocialStats(@Query("id") id: String): Deferred<SocialStats>
 
     companion object {
 

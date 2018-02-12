@@ -20,6 +20,8 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
+
+        classpath "io.realm:realm-gradle-plugin:4.3.1"
     }
 }
 

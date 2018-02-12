@@ -16,6 +16,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.jakewharton.rxbinding2.view.RxView
 import com.teamdecano.cryptocoin.R
 import io.reactivex.Observable
+import kotlinx.android.synthetic.main.coin_details_features.view.*
+import kotlinx.android.synthetic.main.coin_details_info.view.*
+import kotlinx.android.synthetic.main.coin_details_rib.view.*
 import java.util.*
 
 /**
@@ -28,7 +31,7 @@ class CoinDetailsView @JvmOverloads constructor(context: Context, attrs: Attribu
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        findViewById<LinearLayout>(R.id.details_layout).visibility = View.GONE
+        details_layout.visibility = View.GONE
     }
 
     override fun showDetails(coinDetailsViewModel: CoinDetailsViewModel) {
@@ -36,23 +39,23 @@ class CoinDetailsView @JvmOverloads constructor(context: Context, attrs: Attribu
         this.coinDetailsViewModel = coinDetailsViewModel
 
         // TODO: We can use data binding here
-        findViewById<LinearLayout>(R.id.details_layout).visibility = View.VISIBLE
+        details_layout.visibility = View.VISIBLE
 
-        findViewById<TextView>(R.id.txt_symbol).setText(coinDetailsViewModel.symbol)
-        findViewById<TextView>(R.id.txt_name).setText(coinDetailsViewModel.name)
-        findViewById<TextView>(R.id.txt_description).setText(Html.fromHtml(coinDetailsViewModel.description))
+        txt_symbol.text = coinDetailsViewModel.symbol
+        txt_name.text = coinDetailsViewModel.name
+        txt_description.text = Html.fromHtml(coinDetailsViewModel.description)
 
-        findViewById<TextView>(R.id.txt_features).setText(Html.fromHtml(coinDetailsViewModel.features))
+        txt_features.text = Html.fromHtml(coinDetailsViewModel.features)
 
-        findViewById<TextView>(R.id.txt_coin_supply).setText(coinDetailsViewModel.totalCoinSupply)
-        findViewById<TextView>(R.id.txt_start_date).setText(coinDetailsViewModel.startDate)
+        txt_coin_supply.text = coinDetailsViewModel.totalCoinSupply
+        txt_start_date.text = coinDetailsViewModel.startDate
 
-        if (coinDetailsViewModel.website.isNullOrEmpty() || coinDetailsViewModel.website.isNullOrBlank()) {
-            findViewById<Button>(R.id.btn_website).visibility = View.GONE
+        if (coinDetailsViewModel.website.isNullOrEmpty()) {
+            btn_website.visibility = View.GONE
         }
 
-        if (coinDetailsViewModel.twitter.isNullOrEmpty()) {
-            findViewById<Button>(R.id.btn_twitter).visibility = View.GONE
+        if (coinDetailsViewModel.twitterObj?.link.isNullOrEmpty()) {
+            btn_twitter.visibility = View.GONE
         }
 
         try {
@@ -60,9 +63,9 @@ class CoinDetailsView @JvmOverloads constructor(context: Context, attrs: Attribu
                     .asBitmap()
                     .load(coinDetailsViewModel.imageUrl)
                     .into(object : SimpleTarget<Bitmap>(96, 96) {
-                        override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                            findViewById<ImageView>(R.id.coin_logo).setImageBitmap(resource)
-                            findViewById<View>(R.id.bg_dominant).setBackgroundColor(getDominantColor(resource!!))
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            coin_logo.setImageBitmap(resource)
+                            bg_dominant.setBackgroundColor(getDominantColor(resource))
                         }
                     })
         } catch (e: Exception) {
@@ -100,7 +103,7 @@ class CoinDetailsView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun showTwitter(): Observable<String> {
         return RxView.clicks(findViewById<Button>(R.id.btn_twitter))
-                .map { coinDetailsViewModel.twitter }
+                .map { coinDetailsViewModel.twitterObj?.link }
     }
 
     override fun showWebsite(): Observable<String> {

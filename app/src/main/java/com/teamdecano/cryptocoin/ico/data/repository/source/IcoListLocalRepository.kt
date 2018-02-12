@@ -17,7 +17,7 @@ class IcoListLocalRepository(boxStore: BoxStore) {
 
     private var iCoListCccBox: Box<IcoItem> = boxStore.boxFor()
 
-    fun getList(): Deferred<List<List<IcoItem>>> {
+    suspend fun getList(): Deferred<List<List<IcoItem>>> {
 
         return async(CommonPool) {
 
@@ -28,17 +28,14 @@ class IcoListLocalRepository(boxStore: BoxStore) {
         }
     }
 
-    fun updateList(activeList: List<IcoItem>, upcomingList: List<IcoItem>) {
+    suspend fun updateList(activeList: List<IcoItem>, upcomingList: List<IcoItem>) {
 
-        async(CommonPool) {
+        iCoListCccBox.removeAll()
 
-            iCoListCccBox.removeAll()
+        activeList.forEach { active -> active.type = 0 }
+        upcomingList.forEach { upcoming -> upcoming.type = 1 }
 
-            activeList.forEach { active -> active.type = 0 }
-            upcomingList.forEach { upcoming -> upcoming.type = 1 }
-
-            iCoListCccBox.put(activeList)
-            iCoListCccBox.put(upcomingList)
-        }
+        iCoListCccBox.put(activeList)
+        iCoListCccBox.put(upcomingList)
     }
 }
