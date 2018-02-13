@@ -8,6 +8,8 @@ import com.teamdecano.cryptocoin.ico.IcoBuilder
 import com.teamdecano.cryptocoin.ico.IcoRouter
 import com.teamdecano.cryptocoin.navigation.NavigationBuilder
 import com.teamdecano.cryptocoin.navigation.NavigationRouter
+import com.teamdecano.cryptocoin.settings.SettingsBuilder
+import com.teamdecano.cryptocoin.settings.SettingsRouter
 
 import com.uber.rib.core.ViewRouter
 import io.reactivex.disposables.CompositeDisposable
@@ -24,11 +26,13 @@ class RootRouter(
         component: RootBuilder.Component,
         val navigationBuilder: NavigationBuilder,
         val coinBuilder: CoinBuilder,
-        val icoBuilder: IcoBuilder) : ViewRouter<RootView, RootInteractor, RootBuilder.Component>(view, interactor, component) {
+        val icoBuilder: IcoBuilder,
+        val settingsBuilder: SettingsBuilder) : ViewRouter<RootView, RootInteractor, RootBuilder.Component>(view, interactor, component) {
 
     private var navigationRouter: NavigationRouter? = navigationBuilder.build(view.viewNavigationLayout())
     private var coinRouter: CoinRouter? = null
     private var icoRouter: IcoRouter? = null
+    private var settingsRouter: SettingsRouter? = null
 
     private val disposables = CompositeDisposable()
 
@@ -85,11 +89,18 @@ class RootRouter(
     }
 
     fun attachSettings() {
-        view.getToolbarTitle().setText(R.string.settings_title)
+        view.getToolbarTitle().setText(R.string.about_title)
+        settingsRouter = settingsBuilder.build(view.viewContent())
+        attachChild(settingsRouter)
+        view.viewContent().addView(settingsRouter?.view)
     }
 
     fun detachSettings() {
-
+        if (settingsRouter != null) {
+            detachChild(settingsRouter)
+            view.viewContent().removeView(settingsRouter?.view)
+            settingsRouter = null
+        }
     }
 
     override fun willDetach() {

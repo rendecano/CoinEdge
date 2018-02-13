@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_padding">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="240dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/trx_address" />
+
+    <Button
+        android:id="@+id/btnCopyAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/view_padding"
+        android:layout_marginTop="@dimen/view_padding"
+        android:background="@color/colorPercentageNegative"
+        android:text="COPY TRX ADDRESS"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/view_padding"
+        android:background="@color/colorPrimaryDark"
+        android:text="CLOSE"
+        android:textColor="@color/colorWhite" />
+
+</LinearLayout>

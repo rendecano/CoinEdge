@@ -2,6 +2,7 @@ package com.teamdecano.cryptocoin.settings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.teamdecano.cryptocoin.R
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
@@ -38,7 +39,7 @@ class SettingsBuilder(dependency: ParentComponent) : ViewBuilder<SettingsView, S
 
     override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): SettingsView? {
 
-        return null
+        return inflater.inflate(R.layout.settings_rib, parentViewGroup, false) as SettingsView
     }
 
     interface ParentComponent {

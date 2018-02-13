@@ -97,13 +97,7 @@ class CoinListAdapter(coinListModels: List<CoinListModel>, context: Context) : R
 
                     val filteredList = ArrayList<CoinListModel>()
 
-                    for (coin in mCoinListModels) {
-
-                        if (coin.coinName!!.toLowerCase().contains(charString) || coin.name!!.toLowerCase().contains(charString)) {
-
-                            filteredList.add(coin)
-                        }
-                    }
+                    mCoinListModels.filterTo(filteredList) { it.coinName!!.toLowerCase().contains(charString) || it.name!!.toLowerCase().contains(charString) }
 
                     mFilteredList = filteredList
                 }

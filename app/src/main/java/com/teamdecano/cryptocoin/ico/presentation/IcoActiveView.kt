@@ -25,7 +25,7 @@ class IcoActiveView @JvmOverloads constructor(context: Context, attrs: Attribute
 
         // use a linear layout manager
         mLayoutManager = LinearLayoutManager(context)
-        rvIcoActive.setLayoutManager(mLayoutManager)
+        rvIcoActive.layoutManager = mLayoutManager
 
         mIcoModels = ArrayList<IcoItem>()
 
@@ -35,7 +35,7 @@ class IcoActiveView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun setItems(icoList: List<IcoItem>) {
 
-        mIcoListAdapter.updateList(icoList)
+        mIcoListAdapter.setUpdatedList(icoList)
     }
 
     fun onSelectItem(): Observable<IcoItem> {

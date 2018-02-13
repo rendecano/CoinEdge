@@ -3,6 +3,7 @@ package com.teamdecano.cryptocoin.settings
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -20,11 +21,33 @@ class SettingsInteractor : Interactor<SettingsInteractor.SettingsPresenter, Sett
         super.didBecomeActive(savedInstanceState)
 
 
+        presenter.selectChasingCoins().subscribe({
+
+            router.routeToWeb(UrlAddress("https://chasing-coins.com"))
+        })
+
+
+        presenter.selectCryptoCompare().subscribe({
+
+            router.routeToWeb(UrlAddress("https://www.cryptocompare.com"))
+        })
+
+        presenter.selectCoinMarketCap().subscribe({
+
+            router.routeToWeb(UrlAddress("https://coinmarketcap.com"))
+        })
 
     }
 
     /**
      * Presenter interface implemented by this RIB's view.
      */
-    interface SettingsPresenter
+    interface SettingsPresenter {
+
+        fun selectCryptoCompare(): Observable<Any>
+        fun selectCoinMarketCap(): Observable<Any>
+        fun selectChasingCoins(): Observable<Any>
+    }
+
+    data class UrlAddress(val value: String)
 }

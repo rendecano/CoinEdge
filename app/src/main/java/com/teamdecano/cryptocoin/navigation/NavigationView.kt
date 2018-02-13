@@ -24,7 +24,7 @@ class NavigationView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 R.id.navigation_list -> menuRelay.accept(MenuEvent.LIST)
                 R.id.navigation_ico -> menuRelay.accept(MenuEvent.ICO)
-                R.id.navigation_settings -> menuRelay.accept(MenuEvent.SETTINGS)
+                R.id.navigation_about -> menuRelay.accept(MenuEvent.SETTINGS)
             }
 
             true

@@ -14,9 +14,9 @@
         android:title="ICO" />
 
     <item
-        android:id="@+id/navigation_settings"
+        android:id="@+id/navigation_about"
         android:enabled="true"
-        android:icon="@drawable/ic_settings"
-        android:title="Settings" />
+        android:icon="@drawable/ic_about"
+        android:title="About" />
 
 </menu>

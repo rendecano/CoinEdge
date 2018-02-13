@@ -10,6 +10,7 @@ import com.teamdecano.cryptocoin.ico.IcoBuilder
 import com.teamdecano.cryptocoin.navigation.NavigationBuilder
 import com.teamdecano.cryptocoin.navigation.NavigationInteractor
 import com.teamdecano.cryptocoin.root.RootBuilder.RootScope
+import com.teamdecano.cryptocoin.settings.SettingsBuilder
 import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 import dagger.Binds
@@ -85,7 +86,7 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
                     view: RootView,
                     interactor: RootInteractor,
                     stack: ScreenStack): RootRouter {
-                return RootRouter(view, stack, interactor, component, NavigationBuilder(component), CoinBuilder(component), IcoBuilder(component))
+                return RootRouter(view, stack, interactor, component, NavigationBuilder(component), CoinBuilder(component), IcoBuilder(component), SettingsBuilder(component))
             }
         }
     }
@@ -95,7 +96,8 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
     interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent,
             NavigationBuilder.ParentComponent,
             CoinBuilder.ParentComponent,
-            IcoBuilder.ParentComponent {
+            IcoBuilder.ParentComponent,
+            SettingsBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {

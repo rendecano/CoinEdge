@@ -53,11 +53,12 @@ class RootInteractor : Interactor<RootInteractor.RootPresenter, RootRouter>() {
     }
 
     fun attachSettings() {
-        router.attachSettings()
 
         router.detachCoinList()
         router.detachIco()
         router.detachConvert()
+
+        router.attachSettings()
     }
 
     /**

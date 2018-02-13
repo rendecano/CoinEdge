@@ -58,7 +58,7 @@ class CoinListLocalRepository(boxStore: BoxStore) {
 
         // Save to coinListObject to DB
         val coinCccList = ArrayList<CoinListCcc>()
-        coinListObject.feeds!!.values.mapTo(coinCccList) {
+        coinListObject.feeds?.values?.mapTo(coinCccList) {
             CoinListCcc(coinId = it.id,
                     coinSymbol = it.name)
         }

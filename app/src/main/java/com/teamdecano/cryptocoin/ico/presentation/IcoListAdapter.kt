@@ -54,7 +54,7 @@ class IcoListAdapter(coinListModels: List<IcoItem>, context: Context) : Recycler
         return ViewHolder(itemView)
     }
 
-    fun updateList(coinListModels: List<IcoItem>) {
+    fun setUpdatedList(coinListModels: List<IcoItem>) {
         mIcoListModels = coinListModels
         notifyDataSetChanged()
     }

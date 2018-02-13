@@ -1,6 +1,7 @@
 package com.teamdecano.cryptocoin
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -80,6 +81,16 @@ class RootActivity : RibActivity(), OptionsMenuService {
     override fun removeOptionsMenuListener(listener: Listener) {
         menuListeners.remove(listener)
         invalidateOptionsMenu()
+    }
+
+    override fun onBackPressed() {
+
+        val dialog = AlertDialog.Builder(this)
+
+        dialog.setTitle("Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton("No", { dialoginterface, _ -> dialoginterface.dismiss() })
+                .setPositiveButton("Yes", { _, _ -> finish() }).show()
     }
 }
 
