@@ -15,6 +15,20 @@ https://github.com/uber/RIBs/wiki
 # Language
 Kotlin
 
+# Tech/Tools/Libs Used
+- Kotlin Coroutines
+- Realm
+- Objectbox
+- RxJava2
+- RxBinding
+- Dagger 2 
+- Glide
+- Retrofit
+- OkHttp
+- Gson
+- Lottie
+- FancyToast
+
 # API Used
 CryptoCompare
 - https://www.cryptocompare.com/api/
@@ -25,9 +39,7 @@ Chasing Coins
 CoinMarketCap
 - https://coinmarketcap.com/api/
 
-# UI
- - Lottie
-https://github.com/airbnb/lottie-android
+# App Icon
 
  - Iconion
  http://iconion.com/
